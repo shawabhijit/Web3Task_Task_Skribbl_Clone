@@ -21,7 +21,7 @@ public class LobbyWebSocketController {
 
     private final PlayerRepository playerRepository;
     private final RoomRepository roomRepository;
-    private final RoomService roomService;
+//    private final RoomService roomService;
 
     @MessageMapping("/player.register")
     public void registerPlayerSession(

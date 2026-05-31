@@ -1,9 +1,8 @@
 package com.backend.Utils;
 
 import com.backend.Service.RoomService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.*;
@@ -14,12 +13,14 @@ import java.util.concurrent.*;
  * events.
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class GameTimer {
 
-    private final SimpMessagingTemplate messagingTemplate;
     private final RoomService roomService;
+
+    public GameTimer(@Lazy RoomService roomService) {
+        this.roomService = roomService;
+    }
     private final ConcurrentHashMap<String, ScheduledFuture<?>> activeTimers = new ConcurrentHashMap<>();
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 
