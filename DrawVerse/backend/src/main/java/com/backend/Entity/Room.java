@@ -49,6 +49,18 @@ public class Room {
     @Builder.Default
     private RoomSettings settings = new RoomSettings();
 
+    // Game state tracking
+    @Column
+    private Integer currentRound = 0;
+
+    @Column(length = 36)
+    private String currentDrawerId;
+
+    @Column(length = 100)
+    private String currentWord;
+
+    @Column
+    private LocalDateTime gameStartedAt;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

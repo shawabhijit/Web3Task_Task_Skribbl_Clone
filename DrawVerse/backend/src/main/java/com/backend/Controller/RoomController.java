@@ -36,7 +36,6 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/{roomCode}")
     public ResponseEntity<RoomResponse> getRoom(@PathVariable String roomCode) {
         return ResponseEntity.ok(roomService.getRoom(roomCode.toUpperCase()));
@@ -47,13 +46,24 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getPublicRooms());
     }
 
-
-
     @DeleteMapping("/{roomCode}/leave")
     public ResponseEntity<Void> leaveRoom(
             @PathVariable String roomCode,
             @RequestParam String playerId) {
         roomService.leaveRoom(playerId, roomCode.toUpperCase());
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Host starts the game. Transitions from WAITING to IN_PROGRESS,
+     * selects first drawer, and initiates round countdown.
+     */
+    @PostMapping("/{roomCode}/start")
+    public ResponseEntity<RoomResponse> startGame(
+            @PathVariable String roomCode,
+            @RequestParam String playerId) {
+        log.info("POST /api/v1/rooms/{}/start - Player {} starting game", roomCode, playerId);
+        RoomResponse response = roomService.startGame(roomCode.toUpperCase(), playerId);
+        return ResponseEntity.ok(response);
     }
 }

@@ -60,6 +60,13 @@ public class Player {
     @Builder.Default
     private boolean guessedCorrectly = false;
 
+    /**
+     * Whether this player has drawn in the current round.
+     * Used for drawer rotation logic to ensure each player draws once per round.
+     */
+    @Builder.Default
+    private boolean hasDrawn = false;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime joinedAt;
