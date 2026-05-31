@@ -47,6 +47,8 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getPublicRooms());
     }
 
+
+
     @DeleteMapping("/{roomCode}/leave")
     public ResponseEntity<Void> leaveRoom(
             @PathVariable String roomCode,
