@@ -43,4 +43,10 @@ export const roomApi = {
         }).then((res) => {
             if (!res.ok) throw new ApiError(res.status, 'Leave failed');
         }),
+
+    startGame: (roomCode, playerId) =>
+        fetch(`${BASE_URL}/rooms/${roomCode}/start?playerId=${playerId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        }).then(handleResponse),
 };

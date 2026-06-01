@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Controller
@@ -58,10 +60,15 @@ public class LobbyWebSocketController {
             @Payload Map<String, String> payload,
             SimpMessageHeaderAccessor headerAccessor) {
 
-        String roomCode = (String) headerAccessor.getSessionAttributes().get("roomCode");
-        if (roomCode == null) {
-            roomCode = payload.get("roomCode");
+        String roomCodeParam = (String) headerAccessor.getSessionAttributes().get("roomCode");
+        if (roomCodeParam == null || roomCodeParam.isBlank()) {
+            roomCodeParam = payload.get("roomCode");
         }
+        if (roomCodeParam == null || roomCodeParam.isBlank()) {
+            log.warn("Guess received without roomCode. payload={}", payload);
+            return;
+        }
+        final String roomCode = roomCodeParam.toUpperCase();
 
         String playerId = payload.get("playerId");
         String guessText = payload.getOrDefault("guess", "").trim();
@@ -70,9 +77,8 @@ public class LobbyWebSocketController {
 
         try {
             // Fetch room with players
-            String finalRoomCode = roomCode;
             Room room = roomRepository.findByRoomCodeWithPlayers(roomCode.toUpperCase())
-                    .orElseThrow(() -> new RoomExceptions.RoomNotFoundException(finalRoomCode));
+                    .orElseThrow(() -> new RoomExceptions.RoomNotFoundException(roomCode));
 
             // Validate game is in drawing phase
             if (!room.getStatus().name().equals("IN_PROGRESS")) {
@@ -120,9 +126,12 @@ public class LobbyWebSocketController {
 
             if (isCorrect) {
                 // Calculate points based on time remaining
+                long elapsedSeconds = Duration.between(
+                        room.getGameStartedAt(),
+                        LocalDateTime.now()).getSeconds();
+                int timeLeft = Math.max(0, room.getSettings().getDrawTimeSeconds() - (int) elapsedSeconds);
                 int pointsAwarded = guessService.calculateGuesserPoints(
-                        Math.max(0,
-                                80 - (int) ((System.currentTimeMillis() - room.getGameStartedAt().getSecond()) / 1000)),
+                        timeLeft,
                         room.getSettings().getDrawTimeSeconds());
 
                 // Award points to guesser

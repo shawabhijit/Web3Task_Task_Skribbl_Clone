@@ -4,12 +4,15 @@ import { AvatarCarousel } from './AvatarCarousel';
 import { Button } from '../Button';
 import { roomApi, ApiError } from '../api/roomApi';
 import { getOrCreatePlayerId } from '../utils/PlayerIdetity';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
     const [nickname, setNickname] = useState('');
     const [avatar, setAvatar] = useState('🎨');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const navigate = useNavigate();
 
     const playerId = getOrCreatePlayerId();
 
@@ -55,7 +58,7 @@ const HeroSection = () => {
             }
 
             // 3. Navigate to lobby
-            window.location.href = `/lobby/${room.roomCode}`;
+            window.location.href = `/game/${room.roomCode}`;
         } catch (err) {
             if (err instanceof ApiError) {
                 setError(err.message);
@@ -67,46 +70,11 @@ const HeroSection = () => {
         }
     };
 
-    // ---- Create a private room ----
-    const handleCreatePrivate = async () => {
-        const trimmedName = validateNickname();
-        if (!trimmedName) return;
-
-        setLoading('private');
-        setError(null);
-
-        try {
-            const room = await roomApi.createRoom({
-                playerName: trimmedName,
-                playerId,
-                roomType: 'PRIVATE',
-            });
-
-            // Navigate to lobby — host will see the invite link there
-            window.location.href = `/lobby/${room.roomCode}`;
-        } catch (err) {
-            if (err instanceof ApiError) {
-                setError(err.message);
-            } else {
-                setError('Could not create room. Please try again.');
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
     
     return (
         <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-blue-500/30 overflow-x-hidden">
 
             <main className="relative z-10 flex flex-col items-center justify-center min-h-screen">
-                <div className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full text-green-400 text-sm font-bold">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                    4,231 Online
-                </div>
 
                 <div className="text-center mb-8 space-y-1">
                     <h1 className="text-6xl md:text-8xl font-black tracking-tighter filter drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">
@@ -150,10 +118,10 @@ const HeroSection = () => {
                         </Button>
                         <Button
                             variant="secondary"
-                            onClick={handleCreatePrivate}
+                            onClick={navigate.bind(null, '/create')}
                             disabled={!!loading}
                         >
-                            {loading === 'private' ? 'Creating...' : 'Create Private Room'}
+                            Create Private Room
                         </Button>
                     </div>
                 </div>

@@ -10,7 +10,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,7 +17,6 @@ import java.util.Optional;
 public class DrawingWebSocketController {
 
     private final SimpMessagingTemplate messagingTemplate;
-
 
     @MessageMapping("/room.{roomCode}.draw")
     public void handleDraw(
@@ -31,9 +29,8 @@ public class DrawingWebSocketController {
         // Add event type so the React client knows how to handle it
         payload.put("event", "DRAW_DATA");
 
-        messagingTemplate.convertAndSend("/topic/room." + roomCode, Optional.of(payload));
+        messagingTemplate.convertAndSend("/topic/room." + roomCode, (Object) payload);
     }
-
 
     @MessageMapping("/room.{roomCode}.canvas_clear")
     public void handleCanvasClear(
@@ -43,9 +40,8 @@ public class DrawingWebSocketController {
         log.debug("CANVAS_CLEAR from session {} in room {}", headerAccessor.getSessionId(), roomCode);
 
         messagingTemplate.convertAndSend("/topic/room." + roomCode,
-                Optional.of(Map.of("event", "CANVAS_CLEAR")));
+                (Object) Map.of("event", "CANVAS_CLEAR"));
     }
-
 
     @MessageMapping("/room.{roomCode}.draw_undo")
     public void handleDrawUndo(
@@ -55,6 +51,6 @@ public class DrawingWebSocketController {
         log.debug("DRAW_UNDO from session {} in room {}", headerAccessor.getSessionId(), roomCode);
 
         messagingTemplate.convertAndSend("/topic/room." + roomCode,
-                Optional.of(Map.of("event", "DRAW_UNDO")));
+                (Object) Map.of("event", "DRAW_UNDO"));
     }
 }
