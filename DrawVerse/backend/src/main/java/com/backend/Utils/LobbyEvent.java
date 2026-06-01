@@ -116,4 +116,46 @@ public class LobbyEvent {
         private List<PlayerDto> finalScores; // Sorted by score descending
         private Map<String, Integer> rankings; // playerId -> ranking (1st, 2nd, etc)
     }
+
+    /**
+     * Sent when a player makes a correct guess.
+     * Updates the guessing player's score and marks them as guessed.
+     */
+    @Data
+    @Builder
+    public static class GuessCorrect {
+        private String event; // "GUESS_CORRECT"
+        private String playerId; // Who guessed correctly
+        private String playerName;
+        private int pointsAwarded; // Points given to guesser
+        private int newScore; // Updated total score
+        private int correctGuessCount; // How many have guessed so far this round
+        private String feedback; // "Correct! +50 pts" or similar
+        private List<PlayerDto> updatedPlayers; // Updated player list
+    }
+
+    /**
+     * Sent when a player's guess is incorrect.
+     * Does not award points, just registers the guess.
+     */
+    @Data
+    @Builder
+    public static class GuessIncorrect {
+        private String event; // "GUESS_INCORRECT"
+        private String playerId; // Who guessed incorrectly
+        private String playerName;
+        private String guess; // Their incorrect guess text (optional, can be empty)
+        private String feedback; // "Not quite..." or "Keep trying!"
+    }
+
+    /**
+     * Sent when a guess is invalid (empty, duplicate, player already guessed, etc).
+     */
+    @Data
+    @Builder
+    public static class GuessInvalid {
+        private String event; // "GUESS_INVALID"
+        private String playerId;
+        private String reason; // "Already guessed in this round" or "Guess cannot be empty"
+    }
 }
