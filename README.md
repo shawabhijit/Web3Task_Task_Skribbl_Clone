@@ -13,58 +13,6 @@
 
 > **Note:** The backend is hosted on Render's free tier — it may take **10–30 seconds to wake up** on first request after a period of inactivity.
 
----
-
-## ✅ Features
-
-### 🎮 Core Gameplay
-- **Real-time multiplayer drawing & guessing** powered by WebSocket (STOMP over SockJS)
-- **Turn-based rounds** — players take turns drawing while others guess
-- **Live canvas sync** — every stroke is broadcast to all players in the room in real-time
-- **Word selection** — drawer receives a word to draw per round
-
-### 🏠 Room System
-- **Create a room** with fully customizable settings
-- **Public rooms** — browseable and joinable by anyone
-- **Private rooms** — invite-only via shareable room code / link
-- **Host controls** — only the room creator can start the game
-- **Auto-generated 6-character room codes**
-
-### ⚙️ Configurable Room Settings
-- Max players (2–8)
-- Number of rounds
-- Draw time per round (seconds)
-- Number of word choices per turn
-- Number of hints
-- Word mode (Normal / etc.)
-
-### 🖊️ Drawing Tools
-- **Freehand brush** with adjustable size
-- **Eraser** tool
-- **Undo** last stroke
-- **Clear canvas** (broadcast to all viewers)
-- **20-color palette** for drawing
-
-### 💬 Chat & Guessing
-- Live in-room chat visible to all players
-- Guess submission during drawing phase
-- Correct guesses are highlighted in green with player name
-- Drawer is prevented from guessing their own word
-- Players who already guessed correctly cannot re-guess
-
-### 🏆 Scoring System
-- **Time-based scoring** — faster correct guesses earn more points
-- **Drawer points** — awarded incrementally as more players guess correctly
-- Live scoreboard with player rankings displayed during the game
-- Host and drawing-status indicators on player cards
-
-### 🔗 Invite & Join Flow
-- Shareable invite links (`/invite/:roomCode`)
-- Join by room code directly
-- Avatar carousel on the landing page
-
----
-
 ## 🛠️ Tech Stack
 
 ### Frontend
